@@ -1,0 +1,51 @@
+========================================================================
+4.2  PRUEBAS DE LA BASE DE DATOS RELACIONAL (PostgreSQL)
+========================================================================
+
+------------------------------------------------------------------------
+RESUMEN (qué se hizo)
+------------------------------------------------------------------------
+Pruebas de integración contra el PostgreSQL REAL (el contenedor Docker
+"uf-postgres" en el puerto 5433, el mismo que usa la app en local). Se usa
+TypeORM (DataSource) directamente para validar esquema, restricciones y
+relaciones.
+
+Archivo: backend/test/database.e2e-spec.ts  (7 casos)
+  - Conexión a Postgres activa.
+  - CRUD completo de un torneo: crear, leer, actualizar, borrar.
+  - Restricción UNIQUE en users.email  (rechaza email duplicado, error 23505).
+  - Restricción UNIQUE compuesta (tournamentId + teamId): no se inscribe
+    dos veces el mismo equipo (error 23505).
+  - Restricción de LLAVE FORÁNEA: rechaza inscripción con torneo/equipo
+    inexistente (error 23503).
+  - Carga de RELACIONES (JOIN): trae torneo + equipo enlazados.
+  - Lectura: confirma que el seed dejó usuarios cargados.
+
+AISLAMIENTO: cada prueba crea sus propios registros con IDs únicos y los
+borra al terminar (afterEach), así no dependen entre sí ni ensucian los
+datos del seed. Las pruebas son deterministas.
+
+------------------------------------------------------------------------
+EXPLICACIÓN
+------------------------------------------------------------------------
+Aquí SÍ se toca una base de datos real (a diferencia de 4.1) porque el
+objetivo es comprobar que el esquema y las restricciones funcionan de
+verdad: claves únicas, llaves foráneas y joins. Los números 23505 y 23503
+son los códigos de error oficiales de PostgreSQL para "unique_violation"
+y "foreign_key_violation".
+
+------------------------------------------------------------------------
+CÓMO CORRER LAS PRUEBAS
+------------------------------------------------------------------------
+1) Levantar la base de datos (una sola vez por sesión):
+      docker start uf-postgres uf-mongo
+
+2) Correr solo las pruebas de BD relacional:
+      cd backend
+      npx jest --config ./test/jest-e2e.json database
+
+   O toda la suite e2e:
+      npm run test:e2e
+
+NOTA: si "docker start" dice que no encuentra el contenedor, lista los que
+tienes con:  docker ps -a

@@ -1,0 +1,54 @@
+========================================================================
+1.2  CASOS DE PRUEBA
+========================================================================
+
+------------------------------------------------------------------------
+RESUMEN (qué se hizo)
+------------------------------------------------------------------------
+Se elaboró el documento "Pruebas_UniFootball.xlsx" con 77 casos de prueba
+que cubren las 10 capas/áreas que pide el examen. El archivo se genera por
+código con el script "gen_casos.py" (Python + openpyxl), así que es
+reproducible.
+
+El Excel tiene 3 hojas:
+  - "Casos de Prueba": los 77 casos, cada uno con 14 columnas
+    (Capa, Módulo, ID, Objetivo, Precondiciones, Steps, Resultado
+    esperado, Resultado real, Status, Severidad, Prioridad, Automatizado,
+    Requisito/HU, Notas).
+  - "Resumen": conteo de casos por capa.
+  - "Trazabilidad Examen": mapea cada sección del examen con sus casos.
+
+Los IDs siguen un prefijo por capa, por ejemplo:
+  TC-UNIT-*   (unit tests)
+  TC-API-*    (pruebas de la API)
+  TC-DBSQL-*  (base de datos relacional)
+  TC-DBNOSQL-*(base de datos NoSQL)
+  TC-E2E-*    (end to end)
+  TC-PERF-*   (rendimiento)
+  TC-SEC-*    (seguridad)
+  TC-A11Y-*   (accesibilidad)
+  TC-COMPAT-* (compatibilidad)
+  TC-OBS-*    (logs/observabilidad)
+
+------------------------------------------------------------------------
+EXPLICACIÓN
+------------------------------------------------------------------------
+Un caso de prueba describe QUÉ se prueba, CON QUÉ datos y QUÉ se espera.
+El examen pedía datos reales (no "datos válidos" genéricos), por eso cada
+caso usa entradas concretas (correos, nombres de torneo, marcadores,
+payloads de inyección, etc.). Esto sirve de "mapa": cada prueba que
+después automaticé (API, BD, etc.) está ligada a uno de estos IDs.
+
+------------------------------------------------------------------------
+CÓMO DEMOSTRARLO / REGENERARLO
+------------------------------------------------------------------------
+1) Abrir el entregable:
+   Pruebas_UniFootball.xlsx  (en la raíz del proyecto)
+
+2) (Opcional) Regenerar el Excel desde cero:
+   - Cerrar el Excel si está abierto.
+   - En la raíz del proyecto:
+        python gen_casos.py
+   - Se vuelve a crear "Pruebas_UniFootball.xlsx" con los 77 casos.
+
+NOTA: si Python marca que falta openpyxl:  pip install openpyxl

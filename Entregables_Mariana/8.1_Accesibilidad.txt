@@ -1,0 +1,62 @@
+========================================================================
+8.1  ACCESIBILIDAD (WCAG)
+========================================================================
+
+------------------------------------------------------------------------
+RESUMEN (qué se hizo)
+------------------------------------------------------------------------
+Pruebas de accesibilidad AUTOMATIZADAS con jest-axe, con enfoque de
+"auditar y arreglar": se corrió la auditoría, se encontraron fallos reales
+y se corrigieron, dejando las pruebas en verde.
+
+Entorno montado en el frontend (antes no tenía pruebas):
+  vitest + jsdom + @testing-library/react + jest-axe
+  (config "test" agregada en vite.config.ts; scripts "test" y "test:watch")
+
+Archivo de pruebas:
+  UniFootballFront/unifootball-front/src/test/accessibility.test.tsx
+  5 pruebas:
+   - axe sin violaciones en LoginPage.
+   - axe sin violaciones en Navbar.
+   - Los campos del login tienen label asociado (se encuentran por su
+     etiqueta).
+   - Existe una región principal <main> (landmark).
+   - El logo es operable por teclado (es un <button>, no un <span>).
+
+FALLOS ENCONTRADOS Y CORREGIDOS:
+   1. <label> sin asociar a su <input> en LoginPage
+      -> se agregó htmlFor + id    (WCAG 1.3.1 / 4.1.2)
+   2. Contenido sin landmark principal
+      -> <div> cambiado a <main>, y role="alert" en el mensaje de error
+   3. Logo clickeable como <span onClick> (no usable con teclado)
+      -> cambiado a <button> en Navbar, TournamentsPage y PlayerStatsPage
+         (mismo fallo repetido) + reset de CSS para que se vea igual
+                                   (WCAG 2.1.1)
+   4. Idioma del HTML incorrecto (estaba en inglés, la app es en español)
+      -> index.html  lang="es"     (WCAG 3.1.1)
+
+Resultado: 5/5 pruebas en verde; el typecheck (tsc -b) pasa; no cambió
+nada visual.
+
+------------------------------------------------------------------------
+EXPLICACIÓN
+------------------------------------------------------------------------
+axe-core escanea el DOM y reporta violaciones automáticas de WCAG. Como
+axe en jsdom tiene límites (no calcula contraste y acepta el placeholder
+como nombre), se reforzó con consultas accesibles de Testing Library
+(getByLabelText / getByRole) que imitan cómo un lector de pantalla
+encuentra los elementos: si un campo no tiene label o un control no es
+operable por teclado, la prueba falla. Así se detectaron y arreglaron los
+problemas reales.
+
+------------------------------------------------------------------------
+CÓMO CORRER LAS PRUEBAS
+------------------------------------------------------------------------
+   cd UniFootballFront/unifootball-front
+   npm test
+
+   (o en modo interactivo:  npm run test:watch)
+
+NOTA para tu reporte: al instalar las dependencias, npm avisó de
+"2 high severity vulnerabilities". Eso corresponde a OWASP A06
+(componentes vulnerables) y ya queda cubierto en la sección 7.1.

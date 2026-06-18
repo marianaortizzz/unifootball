@@ -1,0 +1,55 @@
+========================================================================
+4.3  PRUEBAS DE LA BASE DE DATOS NoSQL (MongoDB)
+========================================================================
+
+------------------------------------------------------------------------
+RESUMEN (qué se hizo)
+------------------------------------------------------------------------
+Pruebas de integración contra el MongoDB REAL (contenedor Docker
+"uf-mongo" en el puerto 27018, el mismo que usa la app en local). Se usan
+NestJS + Mongoose (los modelos reales del proyecto).
+
+Archivo: backend/test/mongo.e2e-spec.ts  (7 casos)
+  - Conexión a MongoDB activa.
+  - CRUD de un evento de partido (MatchEvent): crear, leer, actualizar,
+    borrar.
+  - Validación de esquema: rechaza un documento SIN campos requeridos
+    (lanza ValidationError).
+  - Validación de esquema: rechaza un valor fuera del ENUM permitido
+    (un tipo de evento inventado -> ValidationError).
+  - Valores por defecto: una notificación nace con read=false y createdAt.
+  - Índice: el esquema de match_events declara un índice en matchId.
+  - Limpieza de colección (deleteMany): inserta varios y los borra (0).
+
+AISLAMIENTO: todos los documentos de prueba se crean con el prefijo
+"e2e-test" en su identificador y se borran en afterEach, así no se mezclan
+con los datos del seed ni dejan colecciones sucias.
+
+------------------------------------------------------------------------
+EXPLICACIÓN
+------------------------------------------------------------------------
+MongoDB no tiene "esquema" rígido como SQL, pero Mongoose define esquemas
+en el código (campos requeridos, enums, defaults, índices). Estas pruebas
+demuestran que esas reglas se aplican de verdad al guardar documentos, y
+que las colecciones se pueden limpiar de forma controlada.
+
+------------------------------------------------------------------------
+CÓMO CORRER LAS PRUEBAS
+------------------------------------------------------------------------
+1) Levantar la base de datos (una sola vez por sesión):
+      docker start uf-postgres uf-mongo
+
+2) Correr solo las pruebas NoSQL:
+      cd backend
+      npx jest --config ./test/jest-e2e.json mongo
+
+   O toda la suite e2e:
+      npm run test:e2e
+
+RESUMEN DE LA SECCIÓN 4 COMPLETA (al correr "npm run test:e2e"):
+  5 suites / 30 pruebas en verde
+  = 16 de API (4.1) + 7 de BD relacional (4.2) + 7 de NoSQL (4.3)
+
+  OJO: la suite completa requiere, además de las BDs (docker start
+  uf-postgres uf-mongo), tener la API CORRIENDO (cd backend &&
+  npm run start:dev), porque las pruebas de 4.1 pegan a la API real.

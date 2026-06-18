@@ -1,0 +1,78 @@
+========================================================================
+4.1  PRUEBAS DE LA API
+========================================================================
+
+------------------------------------------------------------------------
+RESUMEN (qué se hizo)
+------------------------------------------------------------------------
+Pruebas de integración de la API con Jest + Supertest (lo mismo que se vio
+en clase). Se ejecutan contra la API REAL CORRIENDO (caja negra): lanzan
+peticiones HTTP de verdad a http://localhost:3000, igual que lo haría
+Postman, pero automatizado.
+
+Archivos en backend/test/:
+  - app.e2e-spec.ts         (1 caso: smoke, la API responde en GET /)
+  - auth.e2e-spec.ts        (8 casos)
+  - tournaments.e2e-spec.ts (7 casos)
+
+Casos cubiertos (mapeados a los TC-API-* del Excel):
+  AUTH:
+    - register 201 (happy path) + la respuesta NO trae password
+    - register 409 (email duplicado)
+    - register 400 (datos inválidos: email malo, password corta)
+    - register 400 (campo no permitido: whitelist)
+    - login 200 (credenciales correctas)
+    - login 401 (password incorrecta)
+    - GET /auth/users 401 (sin token)
+    - GET /auth/users 200 (con token válido)
+  TOURNAMENTS:
+    - 401 sin token
+    - 201 crear torneo
+    - 200 obtener por id
+    - 404 torneo inexistente
+    - 400 id con formato inválido (no-UUID)
+    - 400 DTO inválido
+    - 400 regla de negocio (endDate anterior a startDate)
+
+Total: 16 pruebas, todas en verde.
+
+DATOS Y LIMPIEZA:
+  - Los usuarios y el token se crean por la propia API (con correos únicos
+    e2e-...@uni.edu para no chocar entre corridas).
+  - Los torneos creados se borran al final con el DELETE de la API
+    (limpieza por la misma caja negra; no se toca la BD por dentro).
+
+------------------------------------------------------------------------
+EXPLICACIÓN
+------------------------------------------------------------------------
+Supertest lanza peticiones HTTP reales contra la API que está corriendo y
+Jest verifica el resultado (status code, cuerpo, etc.). Es el equivalente
+automatizado y reproducible de probar la API con Postman. Se cubren los
+códigos clave: 200/201, 400, 401, 404 y 409.
+
+Si la API NO está levantada, las pruebas fallan con un mensaje claro
+("La API no responde en http://localhost:3000..."), no con un error raro.
+
+------------------------------------------------------------------------
+CÓMO CORRER LAS PRUEBAS
+------------------------------------------------------------------------
+IMPORTANTE: la API debe estar CORRIENDO y las BDs levantadas.
+
+1) Levantar bases de datos:
+      docker start uf-postgres uf-mongo
+
+2) Levantar la API (en una terminal aparte, dejarla abierta):
+      cd backend
+      npm run start:dev          (espera a ver "Nest application successfully
+                                  started"; queda en http://localhost:3000)
+
+3) En OTRA terminal, correr solo las pruebas de la API:
+      cd backend
+      npx jest --config ./test/jest-e2e.json app.e2e auth.e2e tournaments.e2e
+
+Para correr toda la suite e2e (API 4.1 + BD 4.2 + NoSQL 4.3):
+      npm run test:e2e
+   (también requiere la API corriendo y las BDs arriba)
+
+NOTA: si quieres apuntar a otra URL, define la variable API_URL, por ej:
+      API_URL=http://localhost:3001 npx jest --config ./test/jest-e2e.json auth.e2e

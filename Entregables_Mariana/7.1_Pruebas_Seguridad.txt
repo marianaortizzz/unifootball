@@ -1,0 +1,57 @@
+========================================================================
+7.1  PRUEBAS DE SEGURIDAD (OWASP)
+========================================================================
+
+------------------------------------------------------------------------
+RESUMEN (qué se hizo)
+------------------------------------------------------------------------
+Pruebas de seguridad MANUALES (Postman / curl) que demuestran que la app
+RESISTE 3 riesgos del OWASP Top 10 (+ 1 bonus). Ya las verifiqué yo contra
+el backend real, así que pasan cuando las ejecutes.
+
+Guía detallada paso a paso (con peticiones y resultados esperados):
+   Seguridad-7.1-UniFootball.md   (en la raíz del proyecto)
+
+Puntos demostrados (la app PASA):
+  A07 - Fallos de Autenticación:
+        GET /auth/users sin token o con token falso -> 401.
+  A03 - Inyección (SQL Injection):
+        login con payload  ' OR '1'='1  -> 400 (lo corta el ValidationPipe;
+        además TypeORM parametriza las consultas). Nunca 200.
+  A02 - Fallos Criptográficos:
+        register NO devuelve la contraseña y en Postgres se guarda como
+        hash bcrypt ($2b$10$..., 60 caracteres), nunca texto plano.
+  A08 - (bonus) Mass Assignment / Over-posting:
+        register con un campo extra "isAdmin" -> 400 ("property isAdmin
+        should not exist").
+
+------------------------------------------------------------------------
+EXPLICACIÓN
+------------------------------------------------------------------------
+Cada prueba simula un ataque típico y comprueba que la app NO cae:
+no entrega datos sin credencial (A07), no se deja inyectar SQL (A03),
+no expone contraseñas (A02) y no permite inyectar propiedades no
+declaradas (A08). Se eligieron estos 3+1 porque son los más fáciles de
+demostrar y la app efectivamente los pasa.
+
+HALLAZGO IMPORTANTE (esto NO es un "pasa", va al registro de defectos 1.3):
+  A01 - Broken Access Control: el backend NO valida el rol del usuario en
+  los endpoints (los permisos admin/árbitro/jugador se controlan solo en
+  el frontend) y, además, el registro permite elegir role=admin libremente.
+  Es una escalada de privilegios. Está documentado al final de la guía .md.
+
+------------------------------------------------------------------------
+CÓMO DEMOSTRARLO
+------------------------------------------------------------------------
+1) Levantar bases de datos:
+      docker start uf-postgres uf-mongo
+2) Levantar el backend:
+      cd backend
+      npm run start:dev          (API en http://localhost:3000)
+3) Abrir la guía  Seguridad-7.1-UniFootball.md  y ejecutar cada petición
+   en Postman o con curl.exe (OJO en PowerShell usar "curl.exe", no "curl").
+4) Capturar pantalla del request + el código de estado de cada caso.
+
+Ejemplo rápido (A07) en PowerShell:
+   curl.exe -i http://localhost:3000/auth/users
+   -> debe responder HTTP 401
