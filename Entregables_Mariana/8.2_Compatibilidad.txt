@@ -1,0 +1,69 @@
+========================================================================
+8.2  COMPATIBILIDAD DE NAVEGADORES Y DISPOSITIVOS
+========================================================================
+
+------------------------------------------------------------------------
+RESUMEN (qué se hizo)
+------------------------------------------------------------------------
+Pruebas de compatibilidad MANUALES (cross-browser + responsive), respaldadas
+por un análisis estático del código del frontend.
+
+Dos casos en el Excel:
+  TC-COMPAT-001  Cross-browser: Chrome, Edge, Firefox y Opera.
+  TC-COMPAT-002  Responsive: 6 viewports (3 desktop + 1 tablet + 2 móvil).
+
+Guía detallada paso a paso, con matrices de resultados para llenar:
+   Compatibilidad-8.2-Manual-UniFootball.md   (en la raíz del proyecto)
+
+NOTA sobre Safari: la rúbrica lo menciona, pero solo corre en macOS/iOS y el
+equipo trabaja en Windows. Se sustituye por Opera. Aun así se cubren los DOS
+motores de render principales: Chromium/Blink (Chrome, Edge, Opera) y Gecko
+(Firefox), que juntos cubren >95% del mercado de escritorio.
+
+------------------------------------------------------------------------
+RESPALDO TÉCNICO (por qué se espera que pase)
+------------------------------------------------------------------------
+Revisión estática del frontend (React 19 + Vite):
+  - NO usa APIs específicas de navegador (sin navigator.* propietario,
+    structuredClone, crypto.randomUUID, showOpenFilePicker, etc.).
+  - NO usa CSS con vendor prefixes (-webkit-/-moz-/-ms-) ni features
+    experimentales (:has(), backdrop-filter, aspect-ratio).
+  - El layout usa Flexbox y CSS Grid (soporte universal en navegadores
+    actuales).
+  - Única API "moderna": Array.prototype.at() (TournamentDetailPage.tsx),
+    soportada desde 2022 en Chrome/Edge/Firefox/Opera y Safari 15.4+.
+  - Vite compila a ES modules (todos los navegadores modernos).
+  => No hay incompatibilidades de código conocidas; la prueba manual solo
+     confirma el render y la funcionalidad visualmente.
+
+------------------------------------------------------------------------
+EXPLICACIÓN
+------------------------------------------------------------------------
+La compatibilidad NO se puede automatizar de forma fiable sin abrir cada
+navegador real, por eso se hace manual (decisión acordada). El análisis de
+código da la confianza previa de que pasará; la guía .md aporta el
+procedimiento reproducible y las matrices para dejar evidencia (capturas).
+
+ESTADO ACTUAL EN EL EXCEL: TC-COMPAT-001 y 002 están como "Not Executed"
+porque la confirmación visual en los 4 navegadores la debes correr tú
+(5-8 min cross-browser + ~5 min responsive). Al terminar y llenar las
+matrices con ✅, cambia su Status a "Pass" y adjunta capturas.
+
+------------------------------------------------------------------------
+CÓMO DEMOSTRARLO
+------------------------------------------------------------------------
+1) Levantar bases de datos y backend:
+      docker start uf-postgres uf-mongo
+      cd backend
+      npm run start:dev          (API en http://localhost:3000)
+2) Levantar el frontend:
+      cd UniFootballFront/unifootball-front
+      npm run dev                (http://localhost:5173)
+3) Abrir la guía  Compatibilidad-8.2-Manual-UniFootball.md  y:
+   a) TC-COMPAT-001: ejecutar el flujo core (login -> dashboard -> equipos ->
+      torneos+detalle -> navbar/logout) en Chrome, Edge, Firefox y Opera,
+      revisando la consola (F12) sin errores. Llenar la matriz por navegador.
+   b) TC-COMPAT-002: con DevTools (Ctrl+Shift+M) fijar los 6 viewports y
+      verificar layout sin scroll horizontal ni solapamientos. Llenar la
+      matriz por viewport.
+4) Capturar pantalla de cada navegador/viewport y adjuntar al reporte.
