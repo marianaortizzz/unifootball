@@ -23,7 +23,7 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "forceConsistentCasingInFileNames": true,
-    "noFallthroughCasesInSwitch": true, 
-    "jest": true
+    "noFallthroughCasesInSwitch": true,
+    "types": ["node", "jest"]
   }
 }

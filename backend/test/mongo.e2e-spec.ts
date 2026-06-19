@@ -137,7 +137,7 @@ describe('Base de datos NoSQL (MongoDB, e2e)', () => {
     try {
       await matchEventModel.create({
         matchId: `${MARK}-match-3`,
-        type: 'penalti_inventado', // no está en MatchEventType
+        type: 'penalti_inventado' as unknown as MatchEventType, // inválido a propósito: no está en MatchEventType
         minute: 10,
         playerId: 'player-7',
         teamId: 'team-B',
