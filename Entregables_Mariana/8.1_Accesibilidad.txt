@@ -15,24 +15,49 @@ Entorno montado en el frontend (antes no tenía pruebas):
 
 Archivo de pruebas:
   UniFootballFront/unifootball-front/src/test/accessibility.test.tsx
-  5 pruebas:
-   - axe sin violaciones en LoginPage.
-   - axe sin violaciones en Navbar.
-   - Los campos del login tienen label asociado (se encuentran por su
-     etiqueta).
-   - Existe una región principal <main> (landmark).
-   - El logo es operable por teclado (es un <button>, no un <span>).
+  12 pruebas (axe con reglas WCAG 2.1 A/AA + consultas accesibles), cubriendo
+  LoginPage, Navbar, DashboardPage, TeamsPage y TournamentsPage:
+   - axe sin violaciones en LoginPage, Navbar, Dashboard, Teams y Tournaments.
+   - Login: inputs con label asociado (P4).
+   - Login: el error se anuncia (role=alert) y se asocia a los inputs con
+     aria-describedby (P5).
+   - Login: existe landmark principal <main>.
+   - Navbar: el logo es operable por teclado (<button>).
+   - Dashboard: las 4 tarjetas de acción son <button> (P2).
+   - Teams: ninguna imagen sin atributo alt (P1).
+   - Teams: el formulario "Nuevo equipo" tiene labels asociados (P4).
+
+GUÍA DE PRUEBAS MANUALES (lo que axe no puede medir):
+  Accesibilidad-8.1-Manual-UniFootball.md  (en la raíz del proyecto)
+  Cubre: navegación COMPLETA por teclado (P2), focus visible (P3) y una
+  corrida de Lighthouse (mide contraste de color y da un score global).
+
+COBERTURA DE LA RÚBRICA 8.1 (los 5 puntos):
+  P1 imágenes con alt ....... automatizado + Lighthouse
+  P2 navegable con teclado .. automatizado (controles=button) + MANUAL
+  P3 focus visible .......... CSS :focus-visible + MANUAL
+  P4 inputs con label ....... automatizado (Login y Equipos)
+  P5 errores anunciados ..... automatizado (Login role=alert + aria-describedby)
 
 FALLOS ENCONTRADOS Y CORREGIDOS:
-   1. <label> sin asociar a su <input> en LoginPage
-      -> se agregó htmlFor + id    (WCAG 1.3.1 / 4.1.2)
-   2. Contenido sin landmark principal
-      -> <div> cambiado a <main>, y role="alert" en el mensaje de error
+   1. <label> sin asociar a su <input> en LoginPage y en el formulario
+      "Nuevo equipo" de TeamsPage
+      -> se agregó htmlFor + id; aria-label en los selects/dorsal de la
+         plantilla   (WCAG 1.3.1 / 4.1.2)
+   2. Contenido sin landmark principal en Login
+      -> <div> cambiado a <main>
    3. Logo clickeable como <span onClick> (no usable con teclado)
       -> cambiado a <button> en Navbar, TournamentsPage y PlayerStatsPage
-         (mismo fallo repetido) + reset de CSS para que se vea igual
-                                   (WCAG 2.1.1)
-   4. Idioma del HTML incorrecto (estaba en inglés, la app es en español)
+         + reset de CSS para que se vea igual   (WCAG 2.1.1)
+   4. Tarjetas del Dashboard como <div onClick> (no usables con teclado)
+      -> cambiadas a <button> + reset de CSS    (WCAG 2.1.1)
+   5. Sin focus visible (los inputs tenían outline:none)
+      -> regla global :focus-visible { outline: 2px solid } en index.css
+                                                 (WCAG 2.4.7)
+   6. Error de login no asociado a los campos
+      -> role="alert" + aria-describedby/aria-invalid en los inputs
+                                                 (WCAG 3.3.1 / 4.1.3)
+   7. Idioma del HTML incorrecto (estaba en inglés, la app es en español)
       -> index.html  lang="es"     (WCAG 3.1.1)
 
 Resultado: 5/5 pruebas en verde; el typecheck (tsc -b) pasa; no cambió

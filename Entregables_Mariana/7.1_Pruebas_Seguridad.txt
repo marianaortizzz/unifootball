@@ -5,25 +5,32 @@
 ------------------------------------------------------------------------
 RESUMEN (qué se hizo)
 ------------------------------------------------------------------------
-Pruebas de seguridad MANUALES (Postman / curl) que demuestran que la app
-RESISTE 3 riesgos del OWASP Top 10 (+ 1 bonus). Ya las verifiqué yo contra
-el backend real, así que pasan cuando las ejecutes.
+Pruebas de seguridad que demuestran que la app RESISTE 3 riesgos del OWASP
+Top 10 (A02, A03 SQLi y A03 XSS), más A07/A08 como extra. Dos son manuales
+(Postman/curl, ya verificadas contra el backend real) y una automatizada
+(A03 XSS, con vitest).
 
 Guía detallada paso a paso (con peticiones y resultados esperados):
    Seguridad-7.1-UniFootball.md   (en la raíz del proyecto)
 
-Puntos demostrados (la app PASA):
-  A07 - Fallos de Autenticación:
-        GET /auth/users sin token o con token falso -> 401.
-  A03 - Inyección (SQL Injection):
-        login con payload  ' OR '1'='1  -> 400 (lo corta el ValidationPipe;
-        además TypeORM parametriza las consultas). Nunca 200.
-  A02 - Fallos Criptográficos:
+Puntos demostrados (la app PASA). En el Excel quedan como Pass los
+TC-SEC-003 (A02), TC-SEC-004 (A03 SQLi) y TC-SEC-006 (A03 XSS):
+
+  A02 - Fallos Criptográficos (TC-SEC-003, MANUAL):
         register NO devuelve la contraseña y en Postgres se guarda como
         hash bcrypt ($2b$10$..., 60 caracteres), nunca texto plano.
-  A08 - (bonus) Mass Assignment / Over-posting:
-        register con un campo extra "isAdmin" -> 400 ("property isAdmin
-        should not exist").
+  A03 - Inyección SQL (TC-SEC-004, MANUAL):
+        login con payload  ' OR '1'='1  -> 400 (lo corta el ValidationPipe;
+        además TypeORM parametriza las consultas). Nunca 200.
+  A03 - XSS / escape en el frontend (TC-SEC-006, AUTOMATIZADO):
+        un nombre de equipo con payload <img src=x onerror=...> se muestra
+        como TEXTO escapado; React no crea el <img> ni ejecuta el onerror
+        (y el proyecto no usa dangerouslySetInnerHTML).
+        Test: UniFootballFront/unifootball-front/src/test/security.test.tsx
+
+  Adicionales demostrados en la guía manual (no marcados como TC en Excel):
+  A07 - Autenticación: GET /auth/users sin token o con token falso -> 401.
+  A08 - Over-posting: register con campo extra "isAdmin" -> 400.
 
 ------------------------------------------------------------------------
 EXPLICACIÓN
@@ -55,3 +62,7 @@ CÓMO DEMOSTRARLO
 Ejemplo rápido (A07) en PowerShell:
    curl.exe -i http://localhost:3000/auth/users
    -> debe responder HTTP 401
+
+El punto A03-XSS (TC-SEC-006) es AUTOMATIZADO, se corre así:
+   cd UniFootballFront/unifootball-front
+   npm test        (incluye src/test/security.test.tsx)
