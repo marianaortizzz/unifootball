@@ -46,6 +46,7 @@ export default function Navbar({ back }: NavbarProps) {
         )}
         {user && (
           <span
+            data-testid="navbar-user"
             style={{
               display: 'flex',
               alignItems: 'center',
@@ -62,6 +63,7 @@ export default function Navbar({ back }: NavbarProps) {
         )}
         <button
           className="btn btn-danger"
+          data-testid="logout-btn"
           onClick={() => {
             logout()
             navigate('/login')

@@ -1,0 +1,8 @@
+{
+  "name": "Copa E2E Cypress",
+  "sport": "football",
+  "format": "league",
+  "status": "draft",
+  "startDate": "2026-09-01",
+  "endDate": "2026-12-15"
+}

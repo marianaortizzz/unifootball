@@ -1,12 +1,15 @@
 import {
   ConflictException,
+  Inject,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
+import { Counter } from 'prom-client';
 import { Repository } from 'typeorm';
+import { BUSINESS_COUNTER } from '../metrics/metrics.constants';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 import { User, UserRole } from './entities/user.entity';
@@ -28,6 +31,8 @@ export class AuthService {
     @InjectRepository(User)
     private readonly userRepo: Repository<User>,
     private readonly jwtService: JwtService,
+    @Inject(BUSINESS_COUNTER)
+    private readonly businessEvents: Counter<string>,
   ) {}
 
   listUsers(
@@ -58,6 +63,7 @@ export class AuthService {
     });
     const saved = await this.userRepo.save(user);
 
+    this.businessEvents.inc({ event: 'registration' });
     return this.buildResponse(saved);
   }
 
@@ -70,6 +76,7 @@ export class AuthService {
     if (!isValid) {
       throw new UnauthorizedException('Credenciales inválidas');
     }
+    this.businessEvents.inc({ event: 'login' });
     return this.buildResponse(user);
   }
 

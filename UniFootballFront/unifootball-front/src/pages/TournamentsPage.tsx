@@ -197,18 +197,30 @@ export default function TournamentsPage() {
             marginBottom: 24,
           }}
         >
-          <div className="section-title" style={{ fontSize: 36, margin: 0 }}>
+          <div
+            className="section-title"
+            data-testid="tournaments-title"
+            style={{ fontSize: 36, margin: 0 }}
+          >
             TORNEOS
           </div>
           {isAdmin && (
-            <button className="btn btn-primary" onClick={openCreate}>
+            <button
+              className="btn btn-primary"
+              data-testid="new-tournament-btn"
+              onClick={openCreate}
+            >
               + Nuevo torneo
             </button>
           )}
         </div>
 
         {loading && <div className="state-loading">Cargando torneos...</div>}
-        {error && <div className="state-error">{error}</div>}
+        {error && (
+          <div className="state-error" data-testid="tournaments-error">
+            {error}
+          </div>
+        )}
 
         {!loading && !error && tournaments.length === 0 && (
           <div className="state-empty">
@@ -218,7 +230,7 @@ export default function TournamentsPage() {
 
         <div className="tournament-grid">
           {tournaments.map((t) => (
-            <div key={t.id} className="tournament-item">
+            <div key={t.id} className="tournament-item" data-testid="tournament-item">
               <div
                 style={{ flex: 1, cursor: 'pointer' }}
                 onClick={() => navigate(`/tournaments/${t.id}`)}
@@ -262,6 +274,7 @@ export default function TournamentsPage() {
                 <label className="form-label">Nombre</label>
                 <input
                   className="form-input"
+                  data-testid="tournament-name"
                   value={form.name}
                   onChange={(e) => setForm({ ...form, name: e.target.value })}
                   placeholder="Liga Universitaria 2026"
@@ -301,6 +314,7 @@ export default function TournamentsPage() {
                   <label className="form-label">Inicio</label>
                   <input
                     className="form-input"
+                    data-testid="tournament-start"
                     type="date"
                     value={form.startDate}
                     onChange={(e) =>
@@ -312,6 +326,7 @@ export default function TournamentsPage() {
                   <label className="form-label">Fin</label>
                   <input
                     className="form-input"
+                    data-testid="tournament-end"
                     type="date"
                     value={form.endDate}
                     onChange={(e) =>
@@ -334,7 +349,11 @@ export default function TournamentsPage() {
                 </select>
               </div>
 
-              {formError && <div className="login-error">{formError}</div>}
+              {formError && (
+                <div className="login-error" data-testid="tournament-form-error">
+                  {formError}
+                </div>
+              )}
 
               <div
                 style={{
@@ -355,6 +374,7 @@ export default function TournamentsPage() {
                 <button
                   type="submit"
                   className="btn btn-primary"
+                  data-testid="tournament-save"
                   disabled={saving}
                 >
                   {saving

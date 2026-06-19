@@ -19,7 +19,7 @@ export default function DashboardPage() {
       <Navbar />
       <div className="page">
         <div className="dashboard-hero">
-          <h1>DASHBOARD</h1>
+          <h1 data-testid="dashboard-title">DASHBOARD</h1>
           <p>
             Hola {user?.name ?? ''} · {roleHint}
           </p>
@@ -28,6 +28,7 @@ export default function DashboardPage() {
           <button
             type="button"
             className="dashboard-action"
+            data-testid="dash-tournaments"
             onClick={() => navigate('/tournaments')}
           >
             <span className="action-icon" aria-hidden="true">
@@ -44,6 +45,7 @@ export default function DashboardPage() {
           <button
             type="button"
             className="dashboard-action"
+            data-testid="dash-teams"
             onClick={() => navigate('/teams')}
           >
             <span className="action-icon" aria-hidden="true">

@@ -100,12 +100,17 @@ export default function TeamsPage() {
             marginBottom: 24,
           }}
         >
-          <div className="section-title" style={{ fontSize: 36, margin: 0 }}>
+          <div
+            className="section-title"
+            data-testid="teams-title"
+            style={{ fontSize: 36, margin: 0 }}
+          >
             EQUIPOS
           </div>
           {isAdmin && (
             <button
               className="btn btn-primary"
+              data-testid="new-team-btn"
               onClick={() => {
                 setTeamForm({ name: '', logoUrl: '', description: '' })
                 setTeamError(null)
@@ -130,6 +135,7 @@ export default function TeamsPage() {
             <div
               key={t.id}
               className="tournament-item"
+              data-testid="team-item"
               onClick={() => setSelected(t)}
             >
               <div style={{ flex: 1 }}>
@@ -166,6 +172,7 @@ export default function TeamsPage() {
                 </label>
                 <input
                   id="team-name"
+                  data-testid="team-name"
                   className="form-input"
                   autoFocus
                   value={teamForm.name}
@@ -202,7 +209,11 @@ export default function TeamsPage() {
                   }
                 />
               </div>
-              {teamError && <div className="login-error">{teamError}</div>}
+              {teamError && (
+                <div className="login-error" data-testid="team-form-error">
+                  {teamError}
+                </div>
+              )}
               <div
                 style={{
                   display: 'flex',
@@ -222,6 +233,7 @@ export default function TeamsPage() {
                 <button
                   type="submit"
                   className="btn btn-primary"
+                  data-testid="team-save"
                   disabled={savingTeam}
                 >
                   {savingTeam ? 'Guardando...' : 'Crear equipo'}

@@ -1,10 +1,14 @@
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { Logger } from 'nestjs-pino';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  // bufferLogs: guarda los logs de arranque hasta que Pino esté listo.
+  const app = await NestFactory.create(AppModule, { bufferLogs: true });
+  // Usa Pino como logger de Nest (reemplaza el logger por defecto).
+  app.useLogger(app.get(Logger));
 
   app.enableCors({
     origin: process.env.CORS_ORIGIN ?? 'http://localhost:5173',

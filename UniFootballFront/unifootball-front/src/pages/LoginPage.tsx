@@ -40,6 +40,7 @@ export default function LoginPage() {
             </label>
             <input
               id="login-email"
+              data-testid="login-email"
               className="form-input"
               type="email"
               placeholder="usuario@universidad.edu"
@@ -56,6 +57,7 @@ export default function LoginPage() {
             </label>
             <input
               id="login-password"
+              data-testid="login-password"
               className="form-input"
               type="password"
               placeholder="••••••••"
@@ -66,11 +68,21 @@ export default function LoginPage() {
               aria-describedby={error ? 'login-error' : undefined}
             />
           </div>
-          <button className="btn-login" type="submit" disabled={loading}>
+          <button
+            className="btn-login"
+            type="submit"
+            disabled={loading}
+            data-testid="login-submit"
+          >
             {loading ? 'ENTRANDO...' : 'ENTRAR'}
           </button>
           {error && (
-            <div className="login-error" id="login-error" role="alert">
+            <div
+              className="login-error"
+              id="login-error"
+              role="alert"
+              data-testid="login-error"
+            >
               {error}
             </div>
           )}
