@@ -1,0 +1,733 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;600&display=swap');
+
+:root {
+  --bg: #0a0c10;
+  --bg2: #111318;
+  --bg3: #181c24;
+  --border: #1e232e;
+  --border2: #2a3040;
+  --text: #8892a4;
+  --text2: #c8d0de;
+  --heading: #f0f4ff;
+  --accent: #00e676;
+  --accent2: #00b8d9;
+  --accent-dim: rgba(0, 230, 118, 0.12);
+  --red: #ff4444;
+  --yellow: #ffd600;
+  --mono: 'JetBrains Mono', monospace;
+  --sans: 'DM Sans', sans-serif;
+  --display: 'Bebas Neue', sans-serif;
+  --radius: 8px;
+  --radius-lg: 14px;
+  --shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+}
+
+body {
+  font-family: var(--sans);
+  background: var(--bg);
+  color: var(--text2);
+  -webkit-font-smoothing: antialiased;
+  min-height: 100svh;
+}
+
+#root {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Typography ── */
+h1 {
+  font-family: var(--display);
+  color: var(--heading);
+  letter-spacing: 1px;
+}
+h2 {
+  font-family: var(--display);
+  color: var(--heading);
+  letter-spacing: 0.5px;
+}
+h3 {
+  font-family: var(--sans);
+  font-weight: 600;
+  color: var(--heading);
+}
+p {
+  line-height: 1.6;
+}
+
+/* ── Layout ── */
+.page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 32px 24px 64px;
+  width: 100%;
+}
+
+/* ── Navbar ── */
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  height: 56px;
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.navbar-brand {
+  font-family: var(--display);
+  font-size: 22px;
+  color: var(--accent);
+  letter-spacing: 2px;
+  text-decoration: none;
+  /* Reset para usarlo como <button> accesible sin que parezca botón. */
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+.navbar-brand span {
+  color: var(--heading);
+}
+
+/* ── Accesibilidad: focus visible en todos los interactivos (WCAG 2.4.7) ── */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Tarjetas de acción usadas como <button> accesible: que se vean igual */
+button.dashboard-action {
+  width: 100%;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+}
+.navbar-actions {
+  display: flex;
+  gap: 8px;
+}
+
+/* ── Buttons ── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 18px;
+  border-radius: var(--radius);
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  transition: all 0.15s ease;
+  text-decoration: none;
+}
+.btn-primary {
+  background: var(--accent);
+  color: #000;
+}
+.btn-primary:hover {
+  background: #33ec8d;
+  transform: translateY(-1px);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--text2);
+  border: 1px solid var(--border2);
+}
+.btn-ghost:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.btn-danger {
+  background: transparent;
+  color: var(--red);
+  border: 1px solid rgba(255, 68, 68, 0.3);
+}
+.btn-danger:hover {
+  background: rgba(255, 68, 68, 0.1);
+}
+
+/* ── Cards ── */
+.card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+}
+.card:hover {
+  border-color: var(--border2);
+}
+
+/* ── Section heading ── */
+.section-title {
+  font-family: var(--display);
+  font-size: 28px;
+  color: var(--heading);
+  letter-spacing: 1px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.section-title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+/* ── Table ── */
+.uf-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+.uf-table thead tr {
+  border-bottom: 2px solid var(--border2);
+}
+.uf-table th {
+  padding: 10px 12px;
+  text-align: left;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+.uf-table td {
+  padding: 12px 12px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text2);
+}
+.uf-table tbody tr:hover {
+  background: var(--bg3);
+}
+.uf-table tbody tr:last-child td {
+  border-bottom: none;
+}
+.uf-table .pts {
+  font-family: var(--mono);
+  font-weight: 600;
+  color: var(--accent);
+}
+.uf-table .team-name {
+  font-weight: 500;
+  color: var(--heading);
+}
+.uf-table .rank {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text);
+  width: 32px;
+}
+
+/* ── Badge ── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 99px;
+  font-size: 11px;
+  font-weight: 600;
+  font-family: var(--mono);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.badge-green {
+  background: rgba(0, 230, 118, 0.12);
+  color: var(--accent);
+}
+.badge-blue {
+  background: rgba(0, 184, 217, 0.12);
+  color: var(--accent2);
+}
+.badge-yellow {
+  background: rgba(255, 214, 0, 0.12);
+  color: var(--yellow);
+}
+.badge-red {
+  background: rgba(255, 68, 68, 0.12);
+  color: var(--red);
+}
+.badge-gray {
+  background: var(--bg3);
+  color: var(--text);
+}
+
+/* ── Match card ── */
+.match-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  gap: 12px;
+}
+.match-card:hover {
+  border-color: var(--accent);
+  background: var(--bg3);
+  transform: translateX(3px);
+}
+.match-teams {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  font-weight: 500;
+  color: var(--heading);
+}
+.match-score {
+  font-family: var(--display);
+  font-size: 22px;
+  color: var(--accent);
+  letter-spacing: 2px;
+  min-width: 64px;
+  text-align: center;
+}
+.match-vs {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text);
+  min-width: 64px;
+  text-align: center;
+}
+.match-meta {
+  font-size: 12px;
+  color: var(--text);
+  font-family: var(--mono);
+  text-align: right;
+  min-width: 100px;
+}
+
+/* ── Stat cards ── */
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.stat-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  text-align: center;
+}
+.stat-card .stat-value {
+  font-family: var(--display);
+  font-size: 36px;
+  color: var(--accent);
+  line-height: 1;
+}
+.stat-card .stat-label {
+  font-size: 11px;
+  font-family: var(--mono);
+  color: var(--text);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 4px;
+}
+
+/* ── Live indicator ── */
+.live-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--red);
+  animation: pulse 1.4s infinite;
+  margin-right: 6px;
+}
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.4;
+    transform: scale(0.7);
+  }
+}
+
+/* ── Event feed ── */
+.event-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.event-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 14px;
+  animation: slideIn 0.3s ease;
+}
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.event-minute {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--accent);
+  font-weight: 600;
+  min-width: 32px;
+}
+.event-icon {
+  font-size: 18px;
+}
+.event-text {
+  color: var(--text2);
+}
+.event-team {
+  color: var(--text);
+  font-size: 12px;
+  font-family: var(--mono);
+}
+
+/* ── Scoreboard ── */
+.scoreboard {
+  background: var(--bg2);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius-lg);
+  padding: 32px;
+  text-align: center;
+  margin-bottom: 24px;
+}
+.scoreboard-score {
+  font-family: var(--display);
+  font-size: 80px;
+  color: var(--heading);
+  letter-spacing: 8px;
+  line-height: 1;
+}
+.scoreboard-teams {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  color: var(--text);
+  margin-top: 8px;
+  font-family: var(--mono);
+}
+
+/* ── Login ── */
+.login-wrap {
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg);
+  background-image: radial-gradient(
+    ellipse 60% 40% at 50% 0%,
+    rgba(0, 230, 118, 0.07) 0%,
+    transparent 70%
+  );
+}
+.login-box {
+  width: 100%;
+  max-width: 400px;
+  padding: 24px;
+}
+.login-logo {
+  font-family: var(--display);
+  font-size: 52px;
+  letter-spacing: 3px;
+  text-align: center;
+  margin-bottom: 8px;
+  color: var(--heading);
+}
+.login-logo span {
+  color: var(--accent);
+}
+.login-sub {
+  text-align: center;
+  color: var(--text);
+  font-size: 13px;
+  font-family: var(--mono);
+  margin-bottom: 40px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+.form-group {
+  margin-bottom: 16px;
+}
+.form-label {
+  display: block;
+  font-size: 11px;
+  font-family: var(--mono);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+.form-input {
+  width: 100%;
+  padding: 12px 16px;
+  background: var(--bg2);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius);
+  color: var(--heading);
+  font-family: var(--sans);
+  font-size: 15px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.form-input:focus {
+  border-color: var(--accent);
+}
+.form-input::placeholder {
+  color: var(--text);
+}
+.btn-login {
+  width: 100%;
+  padding: 13px;
+  background: var(--accent);
+  color: #000;
+  border: none;
+  border-radius: var(--radius);
+  font-family: var(--display);
+  font-size: 20px;
+  letter-spacing: 2px;
+  cursor: pointer;
+  margin-top: 8px;
+  transition: all 0.15s;
+}
+.btn-login:hover {
+  background: #33ec8d;
+  transform: translateY(-1px);
+}
+.login-error {
+  margin-top: 12px;
+  padding: 10px 14px;
+  background: rgba(255, 68, 68, 0.1);
+  border: 1px solid rgba(255, 68, 68, 0.3);
+  border-radius: var(--radius);
+  color: var(--red);
+  font-size: 13px;
+  text-align: center;
+}
+
+/* ── Dashboard ── */
+.dashboard-hero {
+  padding: 48px 0 32px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 32px;
+}
+.dashboard-hero h1 {
+  font-size: 64px;
+}
+.dashboard-hero p {
+  color: var(--text);
+  margin-top: 8px;
+  font-size: 15px;
+}
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+.dashboard-action {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 24px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: all 0.15s;
+  text-align: left;
+}
+.dashboard-action:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+}
+.dashboard-action .action-icon {
+  font-size: 28px;
+}
+.dashboard-action .action-title {
+  font-family: var(--display);
+  font-size: 20px;
+  color: var(--heading);
+  letter-spacing: 0.5px;
+}
+.dashboard-action .action-desc {
+  font-size: 13px;
+  color: var(--text);
+}
+
+/* ── Tournament cards ── */
+.tournament-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.tournament-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.tournament-item:hover {
+  border-color: var(--accent);
+  transform: translateX(4px);
+}
+.tournament-name {
+  font-family: var(--display);
+  font-size: 22px;
+  color: var(--heading);
+  letter-spacing: 0.5px;
+}
+.tournament-meta {
+  font-size: 12px;
+  color: var(--text);
+  font-family: var(--mono);
+  margin-top: 2px;
+}
+
+/* ── Empty / loading states ── */
+.state-empty {
+  text-align: center;
+  padding: 48px 24px;
+  color: var(--text);
+  font-size: 14px;
+  font-family: var(--mono);
+}
+.state-loading {
+  text-align: center;
+  padding: 64px;
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 13px;
+}
+.state-error {
+  text-align: center;
+  padding: 32px;
+  color: var(--red);
+  font-family: var(--mono);
+  font-size: 13px;
+}
+
+/* ── Tabs ── */
+.tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid var(--border);
+}
+.tab {
+  padding: 10px 20px;
+  font-family: var(--display);
+  font-size: 18px;
+  letter-spacing: 0.5px;
+  color: var(--text);
+  cursor: pointer;
+  border: none;
+  background: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: all 0.15s;
+}
+.tab:hover {
+  color: var(--text2);
+}
+.tab.active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
+/* ── Responsive ── */
+@media (max-width: 640px) {
+  .page {
+    padding: 16px 16px 48px;
+  }
+  .match-card {
+    flex-wrap: wrap;
+  }
+  .scoreboard-score {
+    font-size: 56px;
+  }
+  .dashboard-hero h1 {
+    font-size: 44px;
+  }
+}
+
+/* ---------- Modal CRUD ---------- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 100;
+}
+.modal {
+  background: var(--bg);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius);
+  padding: 28px;
+  width: 100%;
+  max-width: 480px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+.modal-title {
+  font-family: var(--display);
+  font-size: 24px;
+  color: var(--heading);
+  margin-bottom: 20px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+select.form-input {
+  appearance: none;
+  cursor: pointer;
+}
